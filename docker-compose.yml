@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  shlink:
+    image: shlinkio/shlink:stable
+    restart: unless-stopped
+    ports:
+      - "${SHLINK_PORT:-9080}:8080"
+    environment:
+      - DEFAULT_DOMAIN=${DEFAULT_DOMAIN:-localhost}
+      - IS_HTTPS_ENABLED=${IS_HTTPS_ENABLED:-false}
+      - REDIRECT_EXTRA_PATH_MODE=${REDIRECT_EXTRA_PATH_MODE:-ignore}
+      - GEOLITE_LICENSE_KEY=${GEOLITE_LICENSE_KEY:-}
+      - DB_DRIVER=${DB_DRIVER:-sqlite}
+      - AUTO_RECREATE_SCHEMA=true
+    volumes:
+      - shlink_data:/etc/shlink/data
+
+  shlink-web-client:
+    image: shlinkio/shlink-web-client:stable
+    restart: unless-stopped
+    ports:
+      - "${WEB_CLIENT_PORT:-9081}:8080"
+
+volumes:
+  shlink_data:
+    driver: local
